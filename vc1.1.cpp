@@ -14,6 +14,7 @@ using namespace test_helpers;
 
 #define FRAMES 100
 
+//This timer is from the NVIDIA CUDA samples
 double uclDeltaT(int iCounterID)
 {
 	// local var for computation of microseconds since last call
@@ -364,6 +365,7 @@ double time_elapsed;
 float* buff_mxpool2=reinterpret_cast<float*>(out_mxpool2->buffer());
 float* buff_reshape_x=reinterpret_cast<float*>( reshape_x->buffer());
 
+//Waits for preparations before running tests (manually assigning desired cpu cores to process).
 printf("Waiting...\n");
 getchar();
 printf("Running now.\n");
@@ -383,7 +385,7 @@ for(int i=0; i<FRAMES; i++){
 		
 //		FillTensor(reshape_x,reinterpret_cast<float*>(out_mxpool2->buffer()),24*24*32);
 
-
+//Reshaping input is not handeled in NEFullyConnectedLayer_v17.03.1, so have to "reshape" manually. No significant cost in performance though.
 for(int j=0; j<24*24*32;j++)
 //reinterpret_cast<float*>( reshape_x->buffer())[j]=reinterpret_cast<float*>(out_mxpool2->buffer())[j];
 buff_reshape_x[j]=buff_mxpool2[j];
@@ -434,6 +436,7 @@ DisplayTensor(out_dense3,4,1,0);
 printf("\n");
 }
 
+//Buggy softmax in ARM Compute Library v17.03.1 
 printf("--------Softmax out--------\n");
 for(int i=0; i<1; i++){
 DisplayTensor(out_softmax,4,1,0);
