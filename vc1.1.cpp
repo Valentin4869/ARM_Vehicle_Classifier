@@ -12,6 +12,10 @@
 using namespace arm_compute;
 using namespace test_helpers;
 
+//How many runs of the network to be done. 
+//FRAMES>1 doesn't produce reliable results since the same input is used for each "frame". 
+//A good estimate though and will be fixed later.
+
 #define FRAMES 100
 
 //This timer is from the NVIDIA CUDA samples
@@ -20,40 +24,8 @@ double uclDeltaT(int iCounterID)
 	// local var for computation of microseconds since last call
 	double DeltaT;
 
-#ifdef _WIN32 // Windows version of precision host timer
 
-	// Variables that need to retain state between calls
-	static LARGE_INTEGER liOldCount[3] = { { 0, 0 },{ 0, 0 },{ 0, 0 } };
-
-	// locals for new count, new freq and new time delta 
-	LARGE_INTEGER liNewCount, liFreq;
-	if (QueryPerformanceFrequency(&liFreq))
-	{
-		// Get new counter reading
-		QueryPerformanceCounter(&liNewCount);
-
-		if (iCounterID >= 0 && iCounterID <= 2)
-		{
-			// Calculate time difference for timer 0.  (zero when called the first time) 
-			DeltaT = liOldCount[iCounterID].LowPart ? (((double)liNewCount.QuadPart - (double)liOldCount[iCounterID].QuadPart) / (double)liFreq.QuadPart) : 0.0;
-			// Reset old count to new
-			liOldCount[iCounterID] = liNewCount;
-		}
-		else
-		{
-			// Requested counter ID out of range
-			DeltaT = -9999.0;
-		}
-
-		// Returns time difference in seconds since last call
-		return DeltaT;
-	}
-	else
-	{
-		// No high resolution performance counter
-		return -9999.0;
-	}
-#else // Linux version of precision host timer. See http://www.informit.com/articles/article.aspx?p=23618&seqNum=8
+ // Linux version of precision host timer. See http://www.informit.com/articles/article.aspx?p=23618&seqNum=8
 	static struct timeval _NewTime;  // new wall clock time (struct representation in seconds and microseconds)
 	static struct timeval _OldTime[3]; // old wall clock timers 0, 1, 2 (struct representation in seconds and microseconds)
 
@@ -77,7 +49,7 @@ double uclDeltaT(int iCounterID)
 	// Returns time difference in seconds sunce the last call
 	return DeltaT;
 
-#endif
+
 
 }  
 
