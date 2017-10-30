@@ -1,4 +1,6 @@
 
+// Vehicle classifier CNN using the ARM Compute Library (v17.03.1) 
+
 #include "arm_compute/runtime/NEON/NEFunctions.h"
 #include "arm_compute/core/Types.h"
 #include "Utils.h"
@@ -338,6 +340,7 @@ float* buff_mxpool2=reinterpret_cast<float*>(out_mxpool2->buffer());
 float* buff_reshape_x=reinterpret_cast<float*>( reshape_x->buffer());
 
 //Waits for preparations before running tests (manually assigning desired cpu cores to process).
+//TODO:use system(...)	instead, and maybe with cmdline parameters
 printf("Waiting...\n");
 getchar();
 printf("Running now.\n");
